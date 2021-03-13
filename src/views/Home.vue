@@ -1,18 +1,42 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div class="product_list">
+    <ProductCard
+      v-for="product in products"
+      :key="product.ProductName"
+      :product="product"
+    />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import ProductCard from "../components/Cards/ProductCard/ProductCard.vue";
+import { mapActions } from "vuex";
 
 export default {
+  components: { ProductCard },
   name: "Home",
-  components: {
-    HelloWorld
+  data: () => ({
+    isLoading: false
+  }),
+
+  computed: {
+    products() {
+      return this.$store.state.products;
+    }
+  },
+  methods: {
+    ...mapActions(["fetchProducts"])
+  },
+  async created() {
+    this.isLoading = true;
+    await this.fetchProducts();
+    this.isLoading = false;
   }
 };
 </script>
+
+<style lang="scss">
+.product_list {
+  display: flex;
+}
+</style>
